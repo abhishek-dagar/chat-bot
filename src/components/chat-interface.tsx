@@ -247,8 +247,6 @@ export default function ChatInterface({
         body: JSON.stringify({ question: userMessage, chatId }),
       });
       const data = await response.json();
-      console.log(data);
-
       // const response = await generateChatResponse(userMessage, chatId);
       if (data) {
         return data.answer || data.error;
