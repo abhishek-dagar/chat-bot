@@ -18,9 +18,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // Simple auth check - customize this to fit your actual auth system
-  const isAuthenticated = Boolean(
-    req.cookies.get("authjs.session-token")?.value
-  );
+
+  const token =
+    req.cookies.get("authjs.session-token")?.value ||
+    req.cookies.get("__Secure-authjs.session-token")?.value;
+
+  const isAuthenticated = Boolean(token);
 
   if (!isAuthenticated) {
     return new NextResponse(
@@ -30,8 +33,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Use cookie/session-based user ID or fallback to IP
-  const identifier =
-    req.cookies.get("authjs.session-token")?.value || "unknown";
+  const identifier = token || "unknown";
 
   const now = Date.now();
   const record = rateLimitStore.get(identifier);
