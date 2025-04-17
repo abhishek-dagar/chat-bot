@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { generateChatResponse } from "@/lib/action/chat";
 
 type MessageType = "user" | "system";
 
@@ -239,11 +238,24 @@ export default function ChatInterface({
   };
 
   const getAIResponse = async (userMessage: string) => {
-    const response = await generateChatResponse(userMessage, chatId);
-    if (response.data) {
-      return response.data;
+    try {
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: userMessage, chatId }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      // const response = await generateChatResponse(userMessage, chatId);
+      if (data) {
+        return data.answer || data.error;
+      }
+    } catch {
+      return "Something went wrong";
     }
-    return "Something went wrong";
   };
 
   const simulateAIResponse = async (userMessage: string) => {

@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { question } = await req.json();
+    const { question, chatId } = await req.json();
     
-    const { data } = await generateChatResponse(question);
+    const { data } = await generateChatResponse(question, chatId);
     if (data) {
       return NextResponse.json({ answer: data }, { status: 200 });
     }
